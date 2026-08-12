@@ -430,26 +430,83 @@ npm run bundle   # build + inline into portfolio-single-file.html
 
 ---
 
-## 8. Deploying to GitHub
+## 8. Deploying to GitHub — personal account on a work machine
+
+Target: **https://github.com/e-vidyaraghavi/portfolio** → site at
+`https://e-vidyaraghavi.github.io/portfolio/`.
+
+### The problem this setup solves
+
+This machine is set up for the **work** GitHub account, in two independent places:
+
+| What | Where it lives | Value |
+|---|---|---|
+| Commit identity | `~/.gitconfig` (global) | `vidyaraghavi.e@zohocorp.com` |
+| Push credential | macOS keychain, `github.com` | the work account's token |
+
+The credential helper is `osxkeychain`, and it is **not** something this user configured — it comes
+from Xcode's Command Line Tools system gitconfig
+(`/Library/Developer/CommandLineTools/usr/share/git-core/gitconfig`). So it applies everywhere by
+default. Left alone, a push from this repo would be committed under the work email *and*
+authenticated as the work account.
+
+### How it's kept separate — three independent switches
+
+1. **Which repo** — the remote URL:
+   `https://e-vidyaraghavi@github.com/e-vidyaraghavi/portfolio.git`
+2. **Whose name is on the commits** — `user.name` / `user.email` set **locally**, in this repo's
+   `.git/config` only. The global work identity is untouched:
+   ```bash
+   git config user.name  "Vidya Raghavi Elangovan"     # note: no --global
+   git config user.email "e.vidyaraghavi@gmail.com"
+   ```
+3. **Which account authenticates the push** — this is the subtle one. Keychain credentials are keyed
+   by **protocol + host + account**, so embedding `e-vidyaraghavi@` in the remote URL makes git ask
+   the keychain for *that specific username* on github.com. There's no entry for it, so git prompts
+   for a password instead of silently reusing the work token — and stores the answer as a **new,
+   separate** keychain entry. The work entry is never read or modified.
+
+Verify at any time (prints no secrets):
 
 ```bash
-git init
-git add .
-git commit -m "Portfolio built with Vue 3 and Vite"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<repo-name>.git
+git config --show-origin --get user.email   # → file:.git/config  e.vidyaraghavi@gmail.com
+git config --global --get user.email        # → vidyaraghavi.e@zohocorp.com (untouched)
+git remote -v
+```
+
+### Token scope — the gotcha that rejects the push
+
+Paste a **Personal Access Token** as the password (GitHub stopped accepting account passwords over
+HTTPS). It needs more than repo access, because this repo contains `.github/workflows/deploy.yml`:
+
+- **Fine-grained token:** Repository access → this repo, with **Contents: Read and write** *and*
+  **Workflows: Read and write**.
+- **Classic token:** scopes **`repo`** *and* **`workflow`**.
+
+Without the workflow permission the push is rejected with
+*"refusing to allow a Personal Access Token to create or update workflow …"* — and the failure looks
+like an auth problem when it's really a scope problem.
+
+### The push
+
+```bash
 git push -u origin main
+# Username: pre-filled from the URL (e-vidyaraghavi)
+# Password: paste the token
 ```
 
 Then in the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
 The workflow runs on that push and the site goes live at
-`https://<your-username>.github.io/<repo-name>/`. Subsequent pushes to `main` redeploy
-automatically.
+`https://e-vidyaraghavi.github.io/portfolio/`. Every later push to `main` redeploys automatically.
 
-> Naming the repo `<your-username>.github.io` instead publishes to the root domain
-> `https://<your-username>.github.io/` — in that case the base path is already `/`, so you can
-> drop the `BASE_PATH` env line from the workflow.
+> **If commits don't show as yours on GitHub:** add `e.vidyaraghavi@gmail.com` to the personal
+> account under *Settings → Emails*. GitHub links commits by email, so an unrecognised address
+> shows the commit without your avatar. Fix retroactively with
+> `git commit --amend --reset-author` (before pushing) or by adding the email afterwards.
+
+> **Naming note:** a repo called `e-vidyaraghavi.github.io` would publish to the root domain
+> instead, and then you'd drop the `BASE_PATH` line from the workflow since the base is already `/`.
 
 ---
 
