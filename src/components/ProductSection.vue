@@ -16,7 +16,7 @@ const toggle = (i) => (open.value[i] = !open.value[i])
       <p class="section-label"><AppIcon name="compass" /> Product Work</p>
 
       <p class="intro lead">
-        Three problems I worked on — what was wrong, what I changed, and what happened as a
+        Four problems I worked on — what was wrong, what I changed, and what happened as a
         result.
       </p>
 

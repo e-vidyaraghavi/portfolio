@@ -38,6 +38,21 @@ export const highlights = [
 // interview expects them. Drawn from the Zoho and TCS roles.
 export const productWork = [
   {
+    title: 'Associate Email: taking CRM calls from 70K to 1M a month',
+    icon: 'trending',
+    tag: 'Feature Ownership · Zoho CRM Outlook Add-in',
+    art: 'growth',
+    problem:
+      'Sales users live in their inbox, but the emails they exchange with customers were not connected to the CRM records they belonged to. Keeping the two in sync meant leaving Outlook and doing it by hand, so most of it never happened.',
+    approach: [
+      'Implemented the Associate Email feature in the CRM Outlook add-in, letting users link an email to the right CRM record without leaving Outlook.',
+      'Built it across the stack — server-side APIs and the add-in front end in VueJS.',
+      'Kept improving it through ongoing enhancement of the plugin, based on how users actually worked with it.',
+    ],
+    outcome:
+      'User engagement grew from about 70K calls to 1M calls per month.',
+  },
+  {
     title: 'A feature nobody could find: surfacing Parse Attachment in the UI',
     icon: 'trending',
     tag: 'UI & Discoverability · Zoho Recruit',
@@ -103,6 +118,14 @@ export const projects = [
       'Research synthesis into personas — who the users are, what they are trying to do, and where the product gets in their way.',
     href: 'https://docs.google.com/presentation/d/1Ugwaq466g2FLT4-ALQIT4_cP9mtPhtLB/edit?usp=sharing&ouid=109307676524802223349&rtpof=true&sd=true',
     cta: 'View the deck',
+  },
+  {
+    title: 'Kids Typing Fun',
+    emoji: '⌨️',
+    tags: ['Web App', 'Kids'],
+    detail: 'A typing practice app for children, live on the web.',
+    href: 'https://e-vidyaraghavi.github.io/kids-app/',
+    cta: 'Try the app',
   },
 ]
 

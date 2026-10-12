@@ -8,7 +8,7 @@ import AppIcon from './AppIcon.vue'
     <div class="wrap">
       <p class="section-label"><AppIcon name="layers" /> Projects</p>
 
-      <p class="intro lead">Design and research work outside the day job.</p>
+      <p class="intro lead">Design, research and build work outside the day job.</p>
 
       <div class="grid">
         <a
